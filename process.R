@@ -1,5 +1,25 @@
+rm(list=ls())
+
 wd <- "~/Documents/Source/beast2.7/beast-beagle-benchmark/"
 setwd(wd)
+dir.create("results")
+
+extract_time_to_minutes <- function(file_path) {
+  # Read the file
+  lines <- readLines(file_path)
+  
+  # Get the last line
+  last_line <- tail(lines, 1)
+  
+  # Extract the time string using a regular expression
+  time_string <- regmatches(last_line, regexpr("\\d+h\\d+m\\d+s", last_line))
+  
+  # Convert the time string to total minutes
+  time_parts <- as.numeric(unlist(regmatches(time_string, gregexpr("\\d+", time_string))))
+  total_minutes <- time_parts[1] * 60 + time_parts[2] + time_parts[3] / 60
+  
+  return(total_minutes)
+}
 
 # Load the data
 data <- read.csv("data.csv")
@@ -43,17 +63,22 @@ for (g in 1:nrow(grouped_data)){
     if (length(time_line) > 0) {
       time_minutes <- as.numeric(sub(".*Total calculation time: ([0-9.]+) seconds.*",
                                      "\\1", time_line)) / 60
-    } else {
-      stop(paste("Time not found for run,",i))
+      config_table[l, ]<- c(data[i,-9], time_minutes, sum(pattern_counts))
+    } else if (length(extract_time_to_minutes(file_path))>0) {
+      time_minutes <- extract_time_to_minutes(file_path)
+      config_table[l, ]<- c(data[i,-9], time_minutes, sum(pattern_counts))
+    }else {
+      config_table[l, ]<- c(data[i,-9], NA, sum(pattern_counts))
+      # stop(paste("Time not found for run,",i))
     }
-    config_table[l, ]<- c(data[i,-9], time_minutes, sum(pattern_counts))
+    
     l = l + 1
   }
   # Reorder columns so that site patterns are grouped with data configuration
   config_table <- config_table[,c(1:4,10,5:9)]
   # Save table for all results, given a particular configuration.
   # Table is named: nTaxa_seqLength_nPartitions_totalSitePatterns
-  write.csv(config_table,paste0(paste(grouped_data[g,2], 
+  write.csv(config_table,paste0("results/",paste(grouped_data[g,2], 
                                       grouped_data[g,3],
                                       grouped_data[g,1],
                                       config_table[1,5],
@@ -80,11 +105,11 @@ for (g in 1:nrow(grouped_data)){
                               tmp1[which.min(tmp1$`time(minutes)`),])
 }
 
-write.csv(best_table,"best.csv")
-write.csv(best_table_cpu,"best_cpu.csv")
-write.csv(diff_table,"best_vs_worst.csv")
-write.csv(diff_table_cpu,"best_vs_worst_cpu.csv")
-write.csv(diff_table_cpu_gpu,"best_cpu_vs_gpu.csv")
+write.csv(best_table,"results/best.csv")
+write.csv(best_table_cpu,"results/best_cpu.csv")
+write.csv(diff_table,"results/best_vs_worst.csv")
+write.csv(diff_table_cpu,"results/best_vs_worst_cpu.csv")
+write.csv(diff_table_cpu_gpu,"results/best_cpu_vs_gpu.csv")
 
 
 
