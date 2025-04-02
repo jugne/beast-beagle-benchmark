@@ -1,4 +1,4 @@
-# Repo for benchmarking BEAST2 with Beagle on ETH Zurich Euler cluster.
+# Benchmarking BEAST2 with Beagle on ETH Zurich Euler cluster
 
 Information about the study and it's results are summarised in [beast-beagle-benchmark.pdf](https://github.com/jugne/beast-beagle-benchmark/blob/main/beast-beagle-benchmark.pdf).
 
