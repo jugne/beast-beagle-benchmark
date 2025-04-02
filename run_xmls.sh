@@ -18,7 +18,7 @@ for taxa in "${nTaxaSingleP[@]}"; do
           inst="-instances ${c}"
         fi
         for r in "${beagleCPUCommand[@]}"; do
-          eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4/${c}))G --output \"${n}_${taxa}_${length}_1_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=1\" ${xmlSingleName}\""
+          eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4000/${c})) --output \"${n}_${taxa}_${length}_1_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=1\" ${xmlSingleName}\""
           echo "${n},1,${taxa},${length},${c},${ins},${r},0" >> "$output_file"
           let n+=1
         done
@@ -28,7 +28,7 @@ for taxa in "${nTaxaSingleP[@]}"; do
         if [ ${ins} = "true" ]; then
           inst="-instances ${g}"
         fi
-        eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4/${c}))G --output \"${n}_${taxa}_${length}_1_gpu_${g}_${ins}.out\" --open-mode=truncate --gpus ${g} --wrap=\"beast -seed ${seed} -beagle_GPU -beagle_order $(seq -s "," 1 "$g") ${inst} -threads ${g} -D \"nTaxa=${taxa},sl=${length},range=1\" ${xmlSingleName}\""
+        eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4000/${c})) --output \"${n}_${taxa}_${length}_1_gpu_${g}_${ins}.out\" --open-mode=truncate --gpus ${g} --wrap=\"beast -seed ${seed} -beagle_GPU -beagle_order $(seq -s "," 1 "$g") ${inst} -threads ${g} -D \"nTaxa=${taxa},sl=${length},range=1\" ${xmlSingleName}\""
         echo "${n},1,${taxa},${length},1,${ins},beagle_GPU,${g}" >> "$output_file"
         let n+=1
       done
@@ -48,9 +48,9 @@ for taxa in "${nTaxaMultiP[@]}"; do
           fi
           for r in "${beagleCPUCommand[@]}"; do
             if [ ${r} = "java" ]; then
-              eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4/${c}))G --output \"${n}_${taxa}_${length}_${p}_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlSingleName}\""
+              eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4000/${c})) --output \"${n}_${taxa}_${length}_${p}_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlSingleName}\""
             else
-              eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4/${c}))G --output \"${n}_${taxa}_${length}_${p}_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlMultiName}\""
+              eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4000/${c})) --output \"${n}_${taxa}_${length}_${p}_cpu_${c}_${r}_${ins}.out\" --open-mode=truncate --ntasks="${c}" --wrap=\"beast -seed ${seed} -${r} ${inst} -threads ${c} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlMultiName}\""
             fi
             echo "${n},${p},${taxa},${length},${c},${ins},${r},0" >> "$output_file"
             let n+=1
@@ -61,7 +61,7 @@ for taxa in "${nTaxaMultiP[@]}"; do
           if [ ${ins} = "true" ]; then
             inst="-instances ${g}"
           fi          
-            eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4/${c}))G --output \"${n}_${taxa}_${length}_${p}_gpu_${g}_${ins}.out\" --open-mode=truncate --gpus ${g} --wrap=\"beast -seed ${seed} -beagle_GPU -beagle_order $(seq -s "," 1 "$g") ${inst} -threads ${g} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlMultiName}\""
+            eval "sbatch -J ${n} --time=48:00:00 --mem-per-cpu=$((4000/${c})) --output \"${n}_${taxa}_${length}_${p}_gpu_${g}_${ins}.out\" --open-mode=truncate --gpus ${g} --wrap=\"beast -seed ${seed} -beagle_GPU -beagle_order $(seq -s "," 1 "$g") ${inst} -threads ${g} -D \"nTaxa=${taxa},sl=${length},range=$(seq -s "," 1 "$p")\" ${xmlMultiName}\""
             echo "${n},${p},${taxa},${length},1,${ins},beagle_GPU,${g}" >> "$output_file"
             let n+=1
         done
